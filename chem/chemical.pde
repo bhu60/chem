@@ -1,6 +1,6 @@
 class chemical{
- private int pH;
-private String[] parts = new String[4];
+private int pH;
+public String[] parts = new String[4];
 
 chemical(int numH, int numOH, String subgroupP, String subgroupN){
   pH = 7;
@@ -50,6 +50,9 @@ public boolean isSolid(chemical c){
       return false;
     return true;
   }
-
-//add return types, cardinality, any keyboard keys/mouse
+  return false;
 }
+
+/*
+make your own chemicals
+*/

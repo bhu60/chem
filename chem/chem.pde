@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-
+/*
 private int temp;
 private int originalTemp;
 private float spd;
@@ -25,6 +24,7 @@ private void speedRxn(){
   }
 }
 */
+/*
 void keyPressed(){
   if(key == CODED){
     if(keyCode == UP)
@@ -46,7 +46,7 @@ void hood(){
     //quad(0, 800, 125, 625, 1075, 625, 1200, 800);
   fill(255);
   fill(0);
-=======
+
 void setup(){
   size(1200, 800);
   hood();
@@ -119,5 +119,4 @@ void hood() {
   fill(0);
   quad(0, 800, 125, 625, 1075, 625, 1200, 800);
   fill(255);
->>>>>>> 11053ddc59d576b08999f01d16148f838daa6879
 }

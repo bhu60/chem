@@ -31,7 +31,7 @@ void setup() {
   cp5.addSlider("concentration")
      .setPosition(100, 100)
      .setSize(200, 20)
-     .setRange(0.1, 10)
+     .setRange(0.1, 10000)
      .setValue(0.1)
      .setCaptionLabel("Concentration (M)");
 
@@ -67,6 +67,8 @@ void draw() {
   textSize(28);
   fill(0);
   text("pH: " + nf(pH, 1, 2), width / 2, height / 2);
+  
+  rect(300, 100, 450, 150);
 }
 
 void mouseClicked() {
@@ -84,6 +86,7 @@ void mouseClicked() {
       pH = (float) calculatepH();
     }
   }
+  reset();
 }
 
 void addAcid(String sub, double volume, double conc) {
@@ -100,6 +103,7 @@ void addAcid(String sub, double volume, double conc) {
   curr[1] = volume;
   curr[2] = conc;
   numObj += (int) (conc * volume * 10);
+  vol += volume;
   group.add(curr);
 }
 
@@ -117,6 +121,7 @@ void addBase(String sub, double volume, double conc) {
   curr[1] = volume;
   curr[2] = conc;
   numObj -= (int) (conc * volume * 10);
+  vol += volume;
   group.add(curr);
 }
 
@@ -125,21 +130,31 @@ boolean isStrong(double[] curr) {
 }
 
 double calculatepH() {
+  System.out.println(H);
   if (group.size() == 0) {
     return 7;
   }
   double[] curr = group.remove(0);
   if (isStrong(curr)) {
     hasStrong = true;
-    if (curr[0] > 0) {
-      H += curr[2] * curr[1];
-    } else {
-      H -= curr[2] * curr[1];
+    if(Math.abs(curr[0]) == 200){
+      if (curr[0] > 0) {
+        H += 2 * curr[2] * curr[1] / 1000;
+      } else {
+        H -= 2 * curr[2] * curr[1] / 1000;
+      }
+    }
+    else{
+      if (curr[0] > 0) {
+        H += curr[2] * curr[1] / 1000;
+      } else {
+        H -= curr[2] * curr[1] / 1000;
+      }
     }
   } else {
     double a = 1;
     double b = Math.abs(curr[0]);
-    double c = -Math.abs(curr[0]) * curr[2];
+    double c = -Math.abs(curr[2]) * curr[0] / vol;
     double discriminant = b * b - 4 * a * c;
     double x = (-b + Math.sqrt(discriminant)) / (2 * a);
     if (curr[0] >= 0) {
@@ -150,7 +165,17 @@ double calculatepH() {
   }
   if (H <= 0) {
     double OH = -H;
-    return 14 - Math.log10(OH);
+    return 14 + Math.log10(OH);
   }
   return -Math.log10(H);
 }
+void reset(){
+  if(mouseX >= 300 && mouseX <= 450 && mouseY >= 100 && mouseY <= 150){
+    vol = 100;
+    group = new ArrayList<double[]>();
+    H = 0;
+    numObj = 0;
+    hasStrong = false;
+  }
+}
+//4.3.2

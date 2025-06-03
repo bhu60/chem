@@ -1,4 +1,4 @@
-class main{
+/*class main{
 private int temp;
 private int originalTemp;
 private float spd;
@@ -37,4 +37,4 @@ void mousePressed(){
 //same for naoh
 //should display the chemical as it is being created lkke at the top have chemical1 and chemical2
 
-}
+}*/

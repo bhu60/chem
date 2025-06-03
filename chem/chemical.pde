@@ -56,4 +56,7 @@ public boolean isSolid(chemical c){
 /*
 make your own chemicals
 */
+<<<<<<< HEAD
 }
+=======
+>>>>>>> 11053ddc59d576b08999f01d16148f838daa6879

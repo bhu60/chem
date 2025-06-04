@@ -68,7 +68,7 @@ void draw() {
   fill(0);
   text("pH: " + nf(pH, 1, 2), width / 2, height / 2);
   
-  rect(300, 100, 450, 150);
+  rect(300, 100, 150, 50, 10);
 }
 
 void mouseClicked() {
@@ -130,7 +130,6 @@ boolean isStrong(double[] curr) {
 }
 
 double calculatepH() {
-  System.out.println(H);
   if (group.size() == 0) {
     return 7;
   }

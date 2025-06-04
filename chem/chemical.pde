@@ -1,6 +1,6 @@
-/*class chemical{
-private int pH;
-public String[] parts = new String[4];
+class chemical{
+int pH;
+String[] parts = new String[4];
 
 chemical(int numH, int numOH, String subgroupP, String subgroupN){
   pH = 7;
@@ -23,17 +23,27 @@ public boolean hasAlkali(chemical chem){
 }
 
 public boolean canFormPrecipitate(chemical f, chemical s){
-  if(hasAlkali(f) || f.parts[3].equals("acetate") || hasAlkali(s) || s.parts[3].equals("acetate"))
-    return false;
+  String fcat = fcat;
+  String fan = f.parts[3];
+  String scat = scat;
+  String san = s.parts[3];
+  if(hasAlkali(f) && hasAlkal(s))
   if(hasHalide(f)){
-    if(s.parts[2].equals("Ag") || s.parts[2].equals("Pb") || s.parts[2].equals("Hg2"))
+    if(san.equals("Silver") || scat.equals("Lead(II)") || scat.equals("Mercury"))
       return true;
   }
   if(hasHalide(s)){
-    if(f.parts[2].equals("Ag") || f.parts[2].equals("Pb") || f.parts[2].equals("Hg2"))
+    if(fcat.equals("Silver") || fcat.equals("Lead(II)") || fcat.equals("Mercury"))
       return true;
   }
-  
+  if(fan.equals("Sulfate")){
+    if(scat.equals("Silver") || scat.equals("Calcium") || scat.equals("Strontium") || scat.equals("Barium") || scat.equals("Lead"))
+      return true;
+  }
+  if(san.equals("Sulfate")){
+    if(fcat.equals("Silver") || fcat.equals("Calcium") || fcat.equals("Strontium") || fcat.equals("Barium") || fcat.equals("Lead"))
+      return true;
+  }
   return true;
 }
 
@@ -41,7 +51,7 @@ public boolean isSolid(chemical c){
   if(hasAlkali(c) || c.parts[3].equals("acetate"))
     return false;
   if(hasHalide(c)){
-    if(c.parts[2].equals("Ag") || c.parts[2].equals("Pb") || c.parts[2].equals("Hg2"))
+    if(c.parts[2].equals("Silver") || c.parts[2].equals("Lead(II)") || c.parts[2].equals("Mercury"))
       return true;
     return false;
   }
@@ -53,6 +63,7 @@ public boolean isSolid(chemical c){
   return false;
 }
 
+}
 /*
 make your own chemicals
 */

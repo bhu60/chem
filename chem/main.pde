@@ -1,16 +1,22 @@
-/*class main{
-private int temp;
-private int originalTemp;
-private float spd;
-private float originalSpd;
-private chemical c1;
-private chemical c2;
+class main{
+int temp;
+int originalTemp;
+float spd;
+float originalSpd;
+chemical c1;
+chemical c2;
+String[] cations;
+String[] anions;
+
 
 void setup(){
   temp = 293;
   originalTemp = 293;
   spd = 30;
   originalSpd = 30;
+  cations = new String[]{"Acetate", "Aluminum", "Ammonium", "Barium", "Calcium", "Chromium(I)", "Copper(II)", "Iron(III)", "Hydronium", "Lead(II)", "Lithium", "Magnesium", "Manganese(II)", "Mercury", "Potassium", "Silver", "Sodium", "Strontium", "Zinc"};
+  anions = new String[]{"Fluoride", "Chloride", "Bromide", "Iodide", "Sulfate", "Hydrogen sulfate", "Sulfite", "Perchlorate", "Chlorate", "Chlorite", "Carbonate", "Bicarbonate", "Phosphate", "Nitrate", "Cyanide"};
+  
 }
 
 private void speedRxn(){
@@ -37,4 +43,6 @@ void mousePressed(){
 //same for naoh
 //should display the chemical as it is being created lkke at the top have chemical1 and chemical2
 
-}*/
+
+
+}

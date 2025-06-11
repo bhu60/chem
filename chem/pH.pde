@@ -22,13 +22,10 @@ int hydrogenCreated = 0;
 ArrayList<hydroxide> hydroxideList = new ArrayList<hydroxide>();
 int hydroxideCreated = 0;
 
-void setup(){
-    size(800, 800);
-  setuppH();
-}
+
 
 void setuppH() {
-
+  size(800, 800);
   cp5 = new ControlP5(this);
   acids = new String[]{"HNO2", "H2SO3", "H3PO4", "H2CO3", "CH3COOH", "HF", "HCN", "HCl", "HNO3", "HBr", "HI", "HClO3", "HClO4", "H2SO4"};
   bases = new String[]{"NH3", "Nicotine", "Pyridine", "LiOH", "NaOH", "KOH", "RbOH", "CaOH", "Ca(OH)2", "Sr(OH)2", "Ba(OH)2"};
@@ -79,7 +76,7 @@ volSlider.getValueLabel()
      .setSize(18);
 }
 
-void draw() {
+void drawpH() {
   background(255);
   image(beaker, 225, 210, beaker.width / 1.5, beaker.height / 1.5);
   textAlign(CENTER);
@@ -149,7 +146,7 @@ void resetButton(){
   text("Reset", 675, 125);
 }
 
-void mouseClicked() {
+void mouseClickedpH() {
   for (int i = 0; i < acids.length; i++) {
     float y = 200 + i * 37;
     if (mouseX >= 50 && mouseX <= 200 && mouseY >= y && mouseY <= y + 30) {
@@ -194,7 +191,7 @@ void addAcid(String sub, double volume, double conc) {
       hydroxideList.remove(0);
       numObj++;
     }
-  } else {
+  } else if(pH < 7){
     numObj += newCreated;
     float maxWaterHeight = max(waterHeight, 150);
     for (int j = 0; j < newCreated; j++) {
@@ -233,7 +230,7 @@ void addBase(String sub, double volume, double conc) {
       hydrogenList.remove(0);
       numObj--;
     }
-  } else {
+  } else if(pH > 7){
     numObj -= newCreated;
     float maxWaterHeight = max(waterHeight, 150);
     for (int j = 0; j < newCreated; j++) {
@@ -288,7 +285,7 @@ double calculatepH() {
     double OH = -H;
     if (OH <= Math.pow(10, -12))
       return 7.00;
-    return 14 + Math.log10(OH);
+    return 14 - Math.log10(OH);
   }
   return -Math.log10(H);
 }
@@ -305,4 +302,4 @@ void reset(){
     pH = (float) calculatepH();
   }
 }
-//4.3.2
+

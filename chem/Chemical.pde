@@ -1,32 +1,37 @@
 class Chemical{
   
-String[] parts = new String[4];
+String[] parts = new String[6];
 
-Chemical(int numH, int numOH, String subgroupP, String subgroupN){
+Chemical(int numH, int numOH, String subgroupP, String subgroupN, float concentration, float vol){
   parts[0] = "" + numH;
   parts[1] = "" + numOH;
   parts[2] = subgroupP;
   parts[3] = subgroupN;
+  parts[4] = " " + concentration;
+  parts[5] = " " + vol;
 }
 
-public boolean hasHalide(Chemical chem){
-  if(chem.parts[3].equals("Cl") || chem.parts[3].equals("Br") || parts[3].equals("I"))
+boolean hasHalide(Chemical chem){
+  if(chem.parts[3].equals("Fluoride") || chem.parts[3].equals("Chloride") || chem.parts[3].equals("Bromide") || parts[3].equals("Iodide"))
     return true;
   return false;
 }
 
-public boolean hasAlkali(Chemical chem){
-  if(chem.parts[2].equals("Na") || chem.parts[2].equals("K"))
+boolean hasAlkali(Chemical chem){
+  if(chem.parts[2].equals("Lithium") || chem.parts[2].equals("Sodium") || chem.parts[2].equals("Potassium"))
     return true;
   return false;
 }
 
-public boolean canFormPrecipitate(Chemical f, Chemical s){
+boolean canFormPrecipitate(Chemical f, Chemical s){
   String fcat = f.parts[2];
   String fan = f.parts[3];
   String scat = f.parts[2];
   String san = s.parts[3];
   if(hasAlkali(f) && hasAlkali(s))
+    return false;
+  if(fan.equals("Carbonate") || san.equals("Carbonate"))
+    return true;
   if(hasHalide(f)){
     if(san.equals("Silver") || scat.equals("Lead(II)") || scat.equals("Mercury"))
       return true;
@@ -46,7 +51,7 @@ public boolean canFormPrecipitate(Chemical f, Chemical s){
   return false;
 }
 
-public boolean isSolid(Chemical c){
+boolean isSolid(Chemical c){
   if(hasAlkali(c) || c.parts[3].equals("acetate"))
     return false;
   if(hasHalide(c)){
@@ -62,21 +67,42 @@ public boolean isSolid(Chemical c){
   return false;
 }
 
-String colorChange(Chemical chem1, Chemical chem2){
+color colorChange(Chemical chem1, Chemical chem2){
   if(canFormPrecipitate(chem1, chem2)){
-    return "colorless";
+    return color(181, 225, 255, 220);
   }
   if(chem1.parts[2].equals("Calcium") || chem2.parts[2].equals("Calcium"))
-    return "white";
+    return color(255, 255, 255, 100);
   if(chem1.parts[2].equals("Copper(II)") || chem2.parts[2].equals("Copper(II)"))
-    return "blue";
+    return color(48, 83, 255, 100);
   if(chem1.parts[2].equals("Chromium(VI)") || chem2.parts[2].equals("Chromium(VI)"))
-    return "orange";
+    return color(255, 202, 56, 100);
   if(chem1.parts[2].equals("Iron(III)") || chem2.parts[2].equals("Iron(III)"))
-    return "yellow";
-  return "colorless";
+    return color(240, 225, 24, 100);
+  if(chem1.parts[2].equals("Manganese(II)") || chem2.parts[2].equals("Manganese(II)"))
+    return color(255, 181, 240, 100);
+  return color(181, 225, 255, 100);
 }
 
+boolean formBubbles(Chemical c1, Chemical c2){
+  if((c1.parts[2].equals("Hydronium") && c2.parts[3].equals("Carbonate")) || (c2.parts[2].equals("Hydronium") && c1.parts[3].equals("Carbonate")))
+    return true;
+  if((c1.parts[2].equals("Hydronium") && c2.parts[3].equals("Bicarbonate")) || (c2.parts[2].equals("Hydronium") && c1.parts[3].equals("Bicarbonate")))
+    return true;
+  if((c1.parts[2].equals("Ammonium") && c2.parts[3].equals("Hydroxide")) || (c2.parts[2].equals("Ammonium") && c1.parts[3].equals("Hydroxide")))
+    return true;
+  return false;
+}
+
+boolean itselfBubbles(Chemical c1){
+  if(c1.parts[2].equals("Hydronium") && c1.parts[3].equals("Carbonate"))
+    return true;
+  if(c1.parts[2].equals("Hydronium") && c1.parts[3].equals("Bicarbonate"))
+    return true;
+  if(c1.parts[2].equals("Ammonium") && c1.parts[3].equals("Hydroxide"))
+    return true;
+  return false;
+}
 }
 /*
 make your own chemicals

@@ -19,6 +19,8 @@ PImage beaker;
 PFont font;
 ArrayList<hydrogen> hydrogenList = new ArrayList<hydrogen>();
 int hydrogenCreated = 0;
+ArrayList<hydroxide> hydroxideList = new ArrayList<hydroxide>();
+int hydroxideCreated = 0;
 
 void setup(){
     size(800, 800);
@@ -119,10 +121,19 @@ void draw() {
   resetButton();
   
   drawH();
+  drawOH();
 }
 
 void drawH(){
   for(hydrogen h: hydrogenList){
+    h.move();
+    h.bounce(waterHeight);
+    h.display();
+  }
+}
+
+void drawOH(){
+  for(hydroxide h: hydroxideList){
     h.move();
     h.bounce(waterHeight);
     h.display();
@@ -167,16 +178,31 @@ void addAcid(String sub, double volume, double conc) {
   curr[2] = conc;
   vol += volume;
   group.add(curr);
-  if(isStrong(curr))
+  int originalObj = numObj;
+  int newCreated = 0;
+  if(isStrong(curr)){
+    newCreated =  (int) (conc * volume * 3);
     numObj += (int) (conc * volume * 3);
-  else
+  }
+  else{
+    newCreated =  (int) (conc * volume);
     numObj += (int) (conc * volume);
-  float maxWaterHeight = max(waterHeight, 150);
-  for(int j = 0; j < numObj && numObj > 0; j ++){
-    float yMin = 493 + (100 - waterHeight);
-    float yMax = 585;
-    if(yMin < yMax)
-      hydrogenList.add(new hydrogen(random(285, 545), random(yMin, yMax), maxWaterHeight));
+  }
+  if (hydroxideList.size() > 0) {
+    int toRemove = min(hydroxideList.size(), newCreated);
+    for (int n = 0; n < toRemove; n++) {
+      hydroxideList.remove(0);
+      numObj++;
+    }
+  } else {
+    numObj += newCreated;
+    float maxWaterHeight = max(waterHeight, 150);
+    for (int j = 0; j < newCreated; j++) {
+      float yMin = 493 + (100 - waterHeight);
+      float yMax = 585;
+      if (yMin < yMax)
+        hydrogenList.add(new hydrogen(random(285, 545), random(yMin, yMax), maxWaterHeight));
+    }
   }
 }
 
@@ -189,9 +215,34 @@ void addBase(String sub, double volume, double conc) {
   curr[0] = kbArr[i];
   curr[1] = volume;
   curr[2] = conc;
-  numObj -= (int) (conc * volume);
   vol += volume;
   group.add(curr);
+  int originalObj = numObj;
+  int newCreated = 0;
+  if(isStrong(curr)){
+    newCreated =  (int) (conc * volume * 3);
+    numObj -= (int) (conc * volume * 3);
+  }
+  else{
+    newCreated =  (int) (conc * volume);
+    numObj -= (int) (conc * volume);
+  }
+  if (hydrogenList.size() > 0) {
+    int toRemove = min(hydrogenList.size(), newCreated);
+    for (int n = 0; n < toRemove; n++) {
+      hydrogenList.remove(0);
+      numObj--;
+    }
+  } else {
+    numObj -= newCreated;
+    float maxWaterHeight = max(waterHeight, 150);
+    for (int j = 0; j < newCreated; j++) {
+      float yMin = 493 + (100 - waterHeight);
+      float yMax = 585;
+      if (yMin < yMax)
+        hydroxideList.add(new hydroxide(random(285, 545), random(yMin, yMax), maxWaterHeight));
+    }
+  }
 }
 
 boolean isStrong(double[] curr) {
@@ -248,6 +299,7 @@ void reset(){
     H = 0;
     numObj = 0;
     hydrogenList = new ArrayList<hydrogen>();
+    hydroxideList = new ArrayList<hydroxide>();
     waterHeight = 100;
     hasStrong = false;
     pH = (float) calculatepH();

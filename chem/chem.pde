@@ -1,30 +1,59 @@
-/*
-private int temp;
-private int originalTemp;
-private float spd;
-private float originalSpd;
-private chemical c1;
-private chemical c2;
+import controlP5.*;
 
-void setup(){
-  size(1200, 800);
-  fill(255);
+int temp;
+int originalTemp;
+double spd;
+double originalSpd;
+Chemical c1;
+Chemical c2;
+String[] cations;
+String[] anions;
+boolean onChem1;
+
+void setupChem(){
   temp = 293;
   originalTemp = 293;
   spd = 30;
   originalSpd = 30;
-  hood();
-  boxes();
+  cations = new String[]{"Acetate", "Aluminum", "Ammonium", "Barium", "Calcium", "Chromium(I)", "Copper(II)", "Iron(III)", "Hydronium", "Lead(II)", "Lithium", "Magnesium", "Manganese(II)", "Mercury", "Potassium", "Silver", "Sodium", "Strontium", "Zinc"};
+  anions = new String[]{"Fluoride", "Chloride", "Bromide", "Iodide", "Sulfate", "Perchlorate", "Chlorate", "Chlorite", "Carbonate", "Bicarbonate", "Phosphate", "Nitrate", "Cyanide"};
+  c1 = new Chemical(0, 0, "nothing", "nothing");
+  c2 = new Chemical(0, 0, "nothing", "nothing");
+  onChem1 = true;
+
+  cp5.addSlider("concentration")
+     .setPosition(100, 100)
+     .setSize(200, 20)
+     .setRange(0.1, 5)
+     .setValue(0.1)
+     .setCaptionLabel("Concentration (M)");
 }
-/*
-private void speedRxn(){
-  spd = originalSpd * (Math.pow((double) 2, (double) (originalTemp - temp)));
+
+void speedRxn(){
+  spd = originalSpd * (Math.pow(2, originalTemp - temp));
   if(frameCount % spd == 0){
     updateRxn();
   }
 }
-*/
-/*
+
+void drawchem(){
+   for (int i = 0; i < cations.length; i++) {
+    float y = 200 + i * 30;
+    fill(200);
+    rect(50, y, 100, 20);
+    fill(0);
+    text(acids[i], 100, y + 14);
+  }
+
+  for (int i = 0; i < anions.length; i++) {
+    float y = 200 + i * 30;
+    fill(200);
+    rect(650, y, 100, 20);
+    fill(0);
+    text(bases[i], 700, y + 14);
+  }
+}
+
 void keyPressed(){
   if(key == CODED){
     if(keyCode == UP)
@@ -33,90 +62,48 @@ void keyPressed(){
       temp --;
   }
 }
-
+/*
 void mousePressed(){
-  //if mouse x and mouse y is in this range; then chemical1's parts gets changed
+  //if mouse in this range change onChem1 to true or false
+  if(onChem1){
+      for (int i = 0; i < cations.length; i++) {
+        float y = 200 + i * 30;
+        //if it is H or NaOH,
+        if (mouseX >= 50 && mouseX <= 150 && mouseY >= y && mouseY <= y + 20) {
+          c1.parts[2] = cations[i];
+        }
+      }
+      for (int i = 0; i < anions.length; i++) {
+        float y = 200 + i * 30;
+        if (mouseX >= 650 && mouseX <= 750 && mouseY >= y && mouseY <= y + 20) {
+          c1.parts[3] = anions[i];
+        }
+      }
+  }
+  else{
+    for (int i = 0; i < cations.length; i++) {
+        float y = 200 + i * 30;
+        //if it is H or NaOH,
+        if (mouseX >= 50 && mouseX <= 150 && mouseY >= y && mouseY <= y + 20) {
+          c1.parts[2] = cations[i];
+        }
+      }
+      for (int i = 0; i < anions.length; i++) {
+        float y = 200 + i * 30;
+        if (mouseX >= 650 && mouseX <= 750 && mouseY >= y && mouseY <= y + 20) {
+          c1.parts[3] = anions[i];
+        }
+      }
+  }
+
 }
+/
+*/
 //do like the first menu is cations then you press done to go to second menuand throughout this entire time there is a reset button
 //if it is a cation that is not H+ then automatically move but if it is H+ then you can add as much as you want; it just changes pH
 //same for naoh
 //should display the chemical as it is being created lkke at the top have chemical1 and chemical2
 
-void hood(){
-    //quad(0, 800, 125, 625, 1075, 625, 1200, 800);
-  fill(255);
-  fill(0);
-
-void setup(){
-  size(1200, 800);
-  hood();
-}
-
-void background(){
-  fill(0, 800, 100);
-}
-
-void draw() {
-   background(255);
-   fill(0);
->>>>>>> 11053ddc59d576b08999f01d16148f838daa6879
-   quad(0, 800, 200, 650, 1000, 650, 1200, 800);
-   quad(0, 0, 200, 100, 1000, 100, 1200, 0);
-   fill(255);
-   quad(200, 650, 1000, 650, 1000, 100, 200, 100);
-   fill(0,0,255);
-<<<<<<< HEAD
-   int y = 230;
-   int x = 125;
-   int w = 100;
-   quad(200 + x, y, 200 + x + w, y, 200+x+w, y + 15, 200 + x, y + 15);
-   //quad(200+2 * x+w, y, 200+2 * x+2 * w, 200+2 * x+2 * w, y + 15, 200+2 * x+2 * w, y + 15);
-   //quad(200 + 3 * x, y, 250 + 3 * x, y, 250 + 3 * x, y + 14, 200 + 3 * x, y + 14);
-   y = 100;
-   //quad(100 + x, y, 150 + x, y, 150 + x, y + 14, 100 + x, y + 14);
-   //quad(150 + 2 * x, y, 200 + 2 * x, y, 200 + 2 * x, y + 14, 150 + 2 * x, y + 14);
-   //quad(200 + 3 * x, y, 250 + 3 * x, y, 250 + 3 * x, y + 14, 200 + 3 * x, y + 14);
-   x = 100;
-   y = 103;
-   //quad(100 + x, y, 150 + x, y, 150 + x, y + 14, 100 + x, y + 14);
-   //quad(150 + 2 * x, y, 200 + 2 * x, y, 200 + 2 * x, y + 14, 150 + 2 * x, y + 14);
-}
-
-void boxes(){
-  fill(0,255,0);
-  rect(35, 200, 60, 60, 10);
-  rect(105, 200, 60, 60, 10);
-  rect(35, 270, 60, 60, 10);
-  rect(105, 270, 60, 60, 10);
-  rect(35, 340, 60, 60, 10);
-  rect(105, 340, 60, 60, 10);
-  rect(35, 410, 60, 60, 10);
-  rect(105, 410, 60, 60, 10);
-  rect(35, 480, 60, 60, 10);
-  rect(105, 480, 60, 60, 10);
-  rect(35, 550, 60, 60, 10);
-  rect(105, 550, 60, 60, 10);
-=======
-   int y = 550;
-   int x = 125;
-   quad(200 + x, y, 350 + x, y, 350 + x, y + 14, 200 + x, y + 14);
-   quad(300 + 2 * x, y, 400 + 2 * x, y, 400 + 2 * x, y + 14, 350 + 2 * x, y + 14);
-   quad(200 + 3 * x, y, 250 + 3 * x, y, 250 + 3 * x, y + 14, 200 + 3 * x, y + 14);
-   y = 100;
-   quad(100 + x, y, 150 + x, y, 150 + x, y + 14, 100 + x, y + 14);
-   quad(150 + 2 * x, y, 200 + 2 * x, y, 200 + 2 * x, y + 14, 150 + 2 * x, y + 14);
-   quad(200 + 3 * x, y, 250 + 3 * x, y, 250 + 3 * x, y + 14, 200 + 3 * x, y + 14);
-   x = 100;
-   y = 103;
-   quad(100 + x, y, 150 + x, y, 150 + x, y + 14, 100 + x, y + 14);
-   quad(150 + 2 * x, y, 200 + 2 * x, y, 200 + 2 * x, y + 14, 150 + 2 * x, y + 14);
-   x = 100;
-   y = 103 + 53;
-   quad(100 + x, y, 150 + x, y, 150 + x, y + 14, 100 + x, y + 14);
-   quad(150 + 2 * x, y, 200 + 2 * x, y, 200 + 2 * x, y, 0, 0);
-}
-void hood() {
-  fill(0);
-  quad(0, 800, 125, 625, 1075, 625, 1200, 800);
-  fill(255);
+void updateRxn(){
+  
 }

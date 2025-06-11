@@ -1,5 +1,5 @@
 import controlP5.*;
-ControlP5 cp;
+
 int temp;
 int originalTemp;
 double spd;
@@ -22,13 +22,7 @@ ArrayList<bubble> bubbleList = new ArrayList<bubble>();
 ArrayList<smoke> smokeList = new ArrayList<smoke>();
 boolean chemicalJustAdded = false;
 
-void setup(){
-    size(1200, 1000);
-  setupChem();
-}
-
 void setupChem(){
-  cp = new ControlP5(this);
   temp = 25;
   originalTemp = 25;
   spd = 30;
@@ -42,11 +36,14 @@ void setupChem(){
   textFont(font2, 36);
   rectColor = color(181, 225, 255, 220);
   beaker2 = loadImage("photos/chembeaker.jpeg");
-  sliderschem();
+  sliderchem();
   totalVolume = 0;
+  if (!chemSlidersCreated) sliderchem();
+  showChemSliders();
+  hidePHSliders();
 }
 
-void draw(){
+void drawChem(){
   background(255);
   image(beaker2, 237, 140, beaker2.width * 1.3, beaker2.height * 1.3);
   
@@ -63,8 +60,6 @@ void draw(){
   text("Chemical 2: " + c2.parts[2] + " + " + c2.parts[3], 690, 70);
   
   fill(0);
-  textSize(30);
-  text("X: " + mouseX + " Y: " + mouseY, 50, 30);
   
   fill(207, 252, 129);
   rect(450, 99, 138, 80, 10);
@@ -105,10 +100,16 @@ void draw(){
     updateRxn();
     chemicalJustAdded = false;
   }
+  fill(0, 199, 53);
+  rect(770, 920, 200, 50, 10);
+  textSize(18);
+  fill(0);
+  text("Go to pH Simulator", 865, 950);
   doRxn();
+  sliderchem();
 }
 
-void mouseClicked() {
+void mouseClickedChem() {
   if(onChem1){
     for (int i = 0; i < cations.length; i++) {
       float y = 200 + i * 38;
@@ -145,6 +146,15 @@ void mouseClicked() {
   if(mouseX >= 613  && mouseX <= 613 + 138 && mouseY >= 99 && mouseY <= 179){
     addChem(2);
   }
+  
+  if(mouseX >= 770 && mouseX <= 970 && mouseY >= 920 && mouseY <= 970){
+    background(255);
+    reactionSim = false;
+    pHSim = true;
+    surface.setSize(800, 800);
+    setuppH();
+  }
+  
   resetchem();
 
 }
@@ -267,70 +277,5 @@ void updateRxn(){
   rectColor = lerpColor(rectColor, c1.colorChange(c1, c2), 0.1);
   } else {
     rectColor = lerpColor(rectColor, c2.colorChange(c1, c2), 0.1);
-    println(c1.parts[2] + " " + c1.parts[3] + " " + c2.parts[2] + " " + c2.parts[3] + " " + c2.colorChange(c1, c2));
   }
 }
-
-
-void sliderschem(){
-    Slider concentrationSlider1 = cp.addSlider("concentration1")
-     .setPosition(50, 100)
-     .setCaptionLabel("Concentration (M)")
-     .setColorBackground(color(140, 177, 255))
-     .setSize(200, 30)
-     .setRange(0.1, 5)
-     .setValue(0.1);
-concentrationSlider1.getValueLabel()
-     .setFont(font2)
-     .setColor(color(0))
-     .setSize(18);
-concentrationSlider1.getCaptionLabel().setFont(font2)
-     .setColor(color(255))
-     .setSize(15);
-
-  Slider volSlider1 = cp.addSlider("volume1")
-     .setPosition(50, 150)
-     .setCaptionLabel("Volume (mL)")
-     .setSize(200, 30)
-     .setRange(10, 50)
-     .setValue(10)
-     .setColorBackground(color(140, 177, 255));
-volSlider1.getCaptionLabel().setFont(font2)
-     .setColor(color(255))
-     .setSize(15);
-volSlider1.getValueLabel()
-      .setFont(font2)
-     .setColor(color(0))
-     .setSize(18);
-     
-Slider concentrationSlider2 = cp.addSlider("concentration2")
-     .setPosition(775, 100)
-     .setCaptionLabel("Concentration (M)")
-     .setColorBackground(color(255, 166, 254))
-     .setSize(200, 30)
-     .setRange(0.1, 5)
-     .setValue(0.1);
-concentrationSlider2.getValueLabel()
-     .setFont(font2)
-     .setColor(color(0))
-     .setSize(18);
-concentrationSlider2.getCaptionLabel().setFont(font2)
-     .setColor(color(255))
-     .setSize(15);
-
-  Slider volSlider2 = cp.addSlider("volume2")
-     .setPosition(775, 150)
-     .setCaptionLabel("Volume (mL)")
-     .setSize(200, 30)
-     .setRange(10, 50)
-     .setValue(10)
-     .setColorBackground(color(255, 166, 254));
-volSlider2.getCaptionLabel().setFont(font2)
-     .setColor(color(255))
-     .setSize(15);
-volSlider2.getValueLabel()
-      .setFont(font2)
-     .setColor(color(0))
-     .setSize(18);
-}
-

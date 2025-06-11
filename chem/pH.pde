@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import controlP5.*;
 
-ControlP5 cp5;
 boolean hasStrong;
 String[] acids;
 String[] bases;
@@ -38,42 +37,11 @@ void setuppH() {
   hasStrong = false;
   font = loadFont("Constantia-36.vlw");
   textFont(font, 36);
-  sliders();
-     
+  sliderpH();
+  if (!pHSlidersCreated) sliderpH();
+  showPHSliders();
+  hideChemSliders();
   beaker = loadImage("photos/pHbeaker.jpeg");
-}
-
-void sliders(){
-    Slider concentrationSlider = cp5.addSlider("concentration")
-     .setPosition(100, 100)
-     .setCaptionLabel("Concentration (M)")
-     .setColorBackground(color(105, 219, 157))
-     .setSize(200, 30)
-     .setRange(0.1, 5)
-     .setValue(0.1);
-concentrationSlider.getValueLabel()
-     .setFont(font)
-     .setColor(color(0))
-     .setSize(18);
-concentrationSlider.getCaptionLabel().setFont(font)
-     .setColor(color(255))
-     .setSize(15);
-
-  Slider volSlider = cp5.addSlider("volume")
-     .setPosition(100, 150)
-     .setCaptionLabel("Volume (mL)")
-     .setSize(200, 30)
-     .setRange(10, 50)
-     .setValue(10)
-     .setColorBackground(color(105, 219, 157));
-volSlider.getCaptionLabel().setFont(font)
-     .setColor(color(255))
-     .setSize(15);
-
-volSlider.getValueLabel()
-      .setFont(font)
-     .setColor(color(0))
-     .setSize(18);
 }
 
 void drawpH() {
@@ -100,44 +68,50 @@ void drawpH() {
   rect(10, 10, 150, 30);
   fill(0);
   textSize(30);
-  text("X: " + mouseX + " Y: " + mouseY + " " + numObj, 50, 30);
   textAlign(CENTER, CENTER);
   textSize(28);
   fill(0);
   text("pH: " + nf(pH, 1, 2), width / 2, height - 100);
-  
+
   rect(300, 98, 175, 85, 10); //conc and vol black background
-  
+
   fill(35, 134, 255, 230);
   noStroke();
   waterHeight = (float) vol;
-  if(waterHeight >= 332){
+  if (waterHeight >= 332) {
     waterHeight = 332;
   }
   rect(287, 493 + (100 - waterHeight), 250, 5 + (waterHeight - 100));
+
+  rect(550, 610, 250, 100, 10);
+  textSize(18);
+  fill(0);
+  text("Go to Chemical Simulator", 675, 660);
+  fill(0, 199, 53);
+  rect(770, 920, 100, 50, 10);
+
   resetButton();
-  
   drawH();
   drawOH();
 }
 
-void drawH(){
-  for(hydrogen h: hydrogenList){
+void drawH() {
+  for (hydrogen h : hydrogenList) {
     h.move();
     h.bounce(waterHeight);
     h.display();
   }
 }
 
-void drawOH(){
-  for(hydroxide h: hydroxideList){
+void drawOH() {
+  for (hydroxide h : hydroxideList) {
     h.move();
     h.bounce(waterHeight);
     h.display();
   }
 }
 
-void resetButton(){
+void resetButton() {
   fill(125, 175, 255);
   rect(600, 100, 150, 50, 10);
   fill(0);
@@ -161,6 +135,14 @@ void mouseClickedpH() {
       pH = (float) calculatepH();
     }
   }
+  rect(550, 610, 250, 100, 10);
+  if (mouseX >= 550 && mouseX <= 800 && mouseY >= 610 && mouseY <= 710) {
+    background(255);
+    pHSim = false;
+    reactionSim = true;
+    surface.setSize(1200, 1000);
+    setupChem();
+  }
   reset();
 }
 
@@ -177,11 +159,10 @@ void addAcid(String sub, double volume, double conc) {
   group.add(curr);
   int originalObj = numObj;
   int newCreated = 0;
-  if(isStrong(curr)){
+  if (isStrong(curr)) {
     newCreated =  (int) (conc * volume * 3);
     numObj += (int) (conc * volume * 3);
-  }
-  else{
+  } else {
     newCreated =  (int) (conc * volume);
     numObj += (int) (conc * volume);
   }
@@ -191,7 +172,7 @@ void addAcid(String sub, double volume, double conc) {
       hydroxideList.remove(0);
       numObj++;
     }
-  } else if(pH < 7){
+  } else if (pH < 7) {
     numObj += newCreated;
     float maxWaterHeight = max(waterHeight, 150);
     for (int j = 0; j < newCreated; j++) {
@@ -216,11 +197,10 @@ void addBase(String sub, double volume, double conc) {
   group.add(curr);
   int originalObj = numObj;
   int newCreated = 0;
-  if(isStrong(curr)){
+  if (isStrong(curr)) {
     newCreated =  (int) (conc * volume * 3);
     numObj -= (int) (conc * volume * 3);
-  }
-  else{
+  } else {
     newCreated =  (int) (conc * volume);
     numObj -= (int) (conc * volume);
   }
@@ -230,7 +210,7 @@ void addBase(String sub, double volume, double conc) {
       hydrogenList.remove(0);
       numObj--;
     }
-  } else if(pH > 7){
+  } else if (pH > 7) {
     numObj -= newCreated;
     float maxWaterHeight = max(waterHeight, 150);
     for (int j = 0; j < newCreated; j++) {
@@ -248,49 +228,66 @@ boolean isStrong(double[] curr) {
 
 double calculatepH() {
   if (group.size() == 0) {
-    return 7;
+    return 7.0;
   }
-  double[] curr = group.remove(0);
-  if (isStrong(curr)) {
-    hasStrong = true;
-    if(Math.abs(curr[0]) == 200){
-      if (curr[0] > 0) {
-        H += 2 * curr[2] * curr[1] / 1000;
+
+  double H = 0;
+  double OH = 0;
+
+  for (double[] curr : group) {
+    double kaOrKb = curr[0];
+    double volume = curr[1] / 1000.0;
+    double conc = curr[2];
+
+    if (isStrong(curr)) {
+      if (kaOrKb == 200) {
+        H += conc * volume / vol;
+      } else if (kaOrKb == -200) {
+        OH += conc * volume / vol;
+      } else if (kaOrKb == -300) {
+        OH += 2 * conc * volume / vol;
       } else {
-        H -= 2 * curr[2] * curr[1] / 1000;
+        if (kaOrKb > 0) {
+          H += conc * volume / vol;
+        } else {
+          OH += conc * volume / vol;
+        }
       }
-    }
-    else{
-      if (curr[0] > 0) {
-        H += curr[2] * curr[1] / 1000;
-      } else {
-        H -= curr[2] * curr[1] / 1000;
-      }
-    }
-  } else {
-    double ka = Math.abs(curr[0]);
-    double C = curr[2] * curr[1] / vol;
-    double a = 1;
-    double b = ka;
-    double c = -ka * C;
-    double discriminant = b * b - 4 * a * c;
-    double x = (-b + Math.sqrt(discriminant)) / (2 * a);
-    if (curr[0] >= 0) {
-      H += x;
     } else {
-      H -= x;
+      double ka = Math.abs(kaOrKb);
+      double C = conc * volume / vol;
+      double a = 1;
+      double b = ka;
+      double c = -ka * C;
+      double discriminant = b * b - 4 * a * c;
+
+      if (discriminant < 0) {
+        continue;
+      }
+
+      double x = (-b + Math.sqrt(discriminant)) / (2 * a);
+      if (kaOrKb >= 0) {
+        H += x;
+      } else {
+        OH += x;
+      }
     }
   }
-  if (H <= 0) {
-    double OH = -H;
-    if (OH <= Math.pow(10, -12))
-      return 7.00;
-    return 14 - Math.log10(OH);
+
+  double netH = H - OH;
+  if (Math.abs(netH) < 1e-12) {
+    return 7.0;
+  } else if (netH > 0) {
+    if (netH < 1e-12) netH = 1e-12;
+    return -Math.log10(netH);
+  } else {
+    double netOH = -netH;
+    if (netOH < 1e-12) netOH = 1e-12;
+    return 14 + Math.log10(netOH);
   }
-  return -Math.log10(H);
 }
-void reset(){
-  if(mouseX >= 600  && mouseX <= 750 && mouseY >= 100 && mouseY <= 150){
+void reset() {
+  if (mouseX >= 600  && mouseX <= 750 && mouseY >= 100 && mouseY <= 150) {
     vol = 100;
     group = new ArrayList<double[]>();
     H = 0;
@@ -302,4 +299,3 @@ void reset(){
     pH = (float) calculatepH();
   }
 }
-
